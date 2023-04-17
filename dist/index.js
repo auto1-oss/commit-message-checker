@@ -209,8 +209,8 @@ function getInputs() {
         // Get checkAllCommitMessages
         const checkAllCommitMessagesStr = core.getInput('checkAllCommitMessages');
         core.debug(`checkAllCommitMessages: ${checkAllCommitMessagesStr}`);
-        const excludUsersList = core.getInput('excludUsers');
-        core.info(`Excluding commits by users: ${excludUsersList}`);
+        const excludeUsersList = core.getInput('excludeUsers');
+        core.info(`Excluding commits by users: ${excludeUsersList}`);
         // Set pullRequestOptions
         const pullRequestOptions = {
             ignoreTitle: excludeTitleStr
@@ -223,7 +223,7 @@ function getInputs() {
                 ? checkAllCommitMessagesStr === 'true'
                 : /* default */ false,
             accessToken: core.getInput('accessToken'),
-            excludUsersList: excludUsersList
+            excludeUsersList: excludeUsersList
         };
         core.debug(`accessToken: ${pullRequestOptions.accessToken}`);
         // Get commit messages
@@ -297,7 +297,7 @@ function getMessages(pullRequestOptions) {
                             !github.context.payload.repository.owner.name)) {
                         throw new Error('No owner found in the repository.');
                     }
-                    const commitMessages = yield getCommitMessagesFromPullRequest(pullRequestOptions.accessToken, (_a = github.context.payload.repository.owner.name) !== null && _a !== void 0 ? _a : github.context.payload.repository.owner.login, github.context.payload.repository.name, github.context.payload.pull_request.number, pullRequestOptions.excludUsersList);
+                    const commitMessages = yield getCommitMessagesFromPullRequest(pullRequestOptions.accessToken, (_a = github.context.payload.repository.owner.name) !== null && _a !== void 0 ? _a : github.context.payload.repository.owner.login, github.context.payload.repository.name, github.context.payload.pull_request.number, pullRequestOptions.excludeUsersList);
                     for (message of commitMessages) {
                         if (message) {
                             messages.push(message);
@@ -316,7 +316,7 @@ function getMessages(pullRequestOptions) {
                     break;
                 }
                 for (const i in github.context.payload.commits) {
-                    if (github.context.payload.commits[i].message && !pullRequestOptions.excludUsersList.includes(github.context.payload.commits[i].author.name)) {
+                    if (github.context.payload.commits[i].message && !pullRequestOptions.excludeUsersList.includes(github.context.payload.commits[i].author.name)) {
                         messages.push(github.context.payload.commits[i].message);
                     }
                 }
@@ -329,14 +329,14 @@ function getMessages(pullRequestOptions) {
         return messages;
     });
 }
-function getCommitMessagesFromPullRequest(accessToken, repositoryOwner, repositoryName, pullRequestNumber, excludUsersList) {
+function getCommitMessagesFromPullRequest(accessToken, repositoryOwner, repositoryName, pullRequestNumber, excludeUsersList) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug('Get messages from pull request...');
         core.debug(` - accessToken: ${accessToken}`);
         core.debug(` - repositoryOwner: ${repositoryOwner}`);
         core.debug(` - repositoryName: ${repositoryName}`);
         core.debug(` - pullRequestNumber: ${pullRequestNumber}`);
-        core.debug(` - excludUsersList: ${excludUsersList}`);
+        core.debug(` - excludeUsersList: ${excludeUsersList}`);
         const query = `
   query commitMessages(
     $repositoryOwner: String!
@@ -381,7 +381,7 @@ function getCommitMessagesFromPullRequest(accessToken, repositoryOwner, reposito
         var edgedata = repository.pullRequest.commits.edges;
         var edgedataLength = +Object.keys(edgedata).length;
         for (let i = 0; i < edgedataLength; i++) {
-            if (excludUsersList.includes(edgedata[i].node.commit.author.name)) {
+            if (excludeUsersList.includes(edgedata[i].node.commit.author.name)) {
                 delete edgedata[i];
             }
         }

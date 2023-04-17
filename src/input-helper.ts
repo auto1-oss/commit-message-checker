@@ -28,7 +28,7 @@ export interface PullRequestOptions {
   ignoreDescription: boolean
   checkAllCommitMessages: boolean // requires github token
   accessToken: string
-  excludUsersList: string
+  excludeUsersList: string
 }
 
 /**
@@ -65,8 +65,8 @@ export async function getInputs(): Promise<ICheckerArguments> {
   const checkAllCommitMessagesStr = core.getInput('checkAllCommitMessages')
   core.debug(`checkAllCommitMessages: ${checkAllCommitMessagesStr}`)
 
-  const excludUsersList = core.getInput('excludUsers')
-  core.info(`Excluding commits by users: ${excludUsersList}`)
+  const excludeUsersList = core.getInput('excludeUsers')
+  core.info(`Excluding commits by users: ${excludeUsersList}`)
 
   // Set pullRequestOptions
   const pullRequestOptions: PullRequestOptions = {
@@ -80,7 +80,7 @@ export async function getInputs(): Promise<ICheckerArguments> {
       ? checkAllCommitMessagesStr === 'true'
       : /* default */ false,
     accessToken: core.getInput('accessToken'),
-    excludUsersList: excludUsersList
+    excludeUsersList: excludeUsersList
   }
   core.debug(`accessToken: ${pullRequestOptions.accessToken}`)
 
@@ -183,7 +183,7 @@ async function getMessages(
           github.context.payload.repository.owner.login,
           github.context.payload.repository.name,
           github.context.payload.pull_request.number,
-          pullRequestOptions.excludUsersList
+          pullRequestOptions.excludeUsersList
         )
 
         for (message of commitMessages) {
@@ -209,7 +209,7 @@ async function getMessages(
       }
 
       for (const i in github.context.payload.commits) {
-        if (github.context.payload.commits[i].message && !pullRequestOptions.excludUsersList.includes(github.context.payload.commits[i].author.name)) {
+        if (github.context.payload.commits[i].message && !pullRequestOptions.excludeUsersList.includes(github.context.payload.commits[i].author.name)) {
           messages.push(github.context.payload.commits[i].message)
         }
       }
@@ -229,14 +229,14 @@ async function getCommitMessagesFromPullRequest(
   repositoryOwner: string,
   repositoryName: string,
   pullRequestNumber: number,
-  excludUsersList: string
+  excludeUsersList: string
 ): Promise<string[]> {
   core.debug('Get messages from pull request...')
   core.debug(` - accessToken: ${accessToken}`)
   core.debug(` - repositoryOwner: ${repositoryOwner}`)
   core.debug(` - repositoryName: ${repositoryName}`)
   core.debug(` - pullRequestNumber: ${pullRequestNumber}`)
-  core.debug(` - excludUsersList: ${excludUsersList}`)
+  core.debug(` - excludeUsersList: ${excludeUsersList}`)
 
   const query = `
   query commitMessages(
@@ -308,7 +308,7 @@ async function getCommitMessagesFromPullRequest(
   var edgedataLength: number = +Object.keys(edgedata).length;
 
   for (let i = 0; i < edgedataLength; i++) {
-    if (excludUsersList.includes(edgedata[i].node.commit.author.name)) {
+    if (excludeUsersList.includes(edgedata[i].node.commit.author.name)) {
       delete edgedata[i];
     }
   }
