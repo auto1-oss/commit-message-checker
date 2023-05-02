@@ -74,11 +74,11 @@ export async function checkCommitMessages(
       messagesStatusList.push(`'<br> - OK: ${message}'`)
     } else {
       core.info(`- failed: "${message}"`)
-      messagesStatusList.push(`'<br> - failed: ${message}'`)
+      messagesStatusList.push(`'<br> - ⚠ failed: ${message}'`)
       result = false
     }
   }
-  core.setOutput('messagesStatusList', messagesStatusList.toString());
+  core.setOutput('messagesStatusList', messagesStatusList.join(" ").toString());
   // Throw error in case of failed test
   if (!result) {
     throw new Error(args.error)
