@@ -78,7 +78,7 @@ export async function checkCommitMessages(
       result = false
     }
   }
-  core.setOutput('messagesStatusList', messagesStatusList.join(" ").toString().replace("','",""));
+  core.setOutput('messagesStatusList', messagesStatusList.join("").toString().replace("'","").replace(",",""));
   // Throw error in case of failed test
   if (!result) {
     throw new Error(args.error)
