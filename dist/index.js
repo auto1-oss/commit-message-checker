@@ -102,7 +102,7 @@ function checkCommitMessages(args) {
                 result = false;
             }
         }
-        core.setOutput('messagesStatusList', messagesStatusList.toString());
+        core.setOutput('messagesStatusList', messagesStatusList);
         // Throw error in case of failed test
         if (!result) {
             throw new Error(args.error);
