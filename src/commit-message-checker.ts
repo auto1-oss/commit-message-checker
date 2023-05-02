@@ -78,7 +78,7 @@ export async function checkCommitMessages(
       result = false
     }
   }
-  core.setOutput('messagesStatusList', messagesStatusList);
+  core.setOutput('messagesStatusList', messagesStatusList.toString());
   // Throw error in case of failed test
   if (!result) {
     throw new Error(args.error)
