@@ -102,7 +102,7 @@ function checkCommitMessages(args) {
                 result = false;
             }
         }
-        core.setOutput('messagesStatusList', messagesStatusList.join('\<br\>'));
+        core.setOutput('messagesStatusList', messagesStatusList.join('\n'));
         // Throw error in case of failed test
         if (!result) {
             throw new Error(args.error);
