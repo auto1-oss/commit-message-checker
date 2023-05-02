@@ -19,7 +19,7 @@
  * Imports
  */
 import * as core from '@actions/core'
-var messagesStatusList = new Array(); 
+var messagesStatusList = new Array("List of commits not complaince: "); 
 /**
  * Interface used as arguments for the check function containing the pattern,
  * error message and the messages.
@@ -78,7 +78,7 @@ export async function checkCommitMessages(
       result = false
     }
   }
-  core.setOutput('messagesStatusList', messagesStatusList.join(" ").toString());
+  core.setOutput('messagesStatusList', messagesStatusList.join(" ").toString().replace("','",""));
   // Throw error in case of failed test
   if (!result) {
     throw new Error(args.error)

@@ -60,7 +60,7 @@ exports.checkCommitMessages = void 0;
  * Imports
  */
 const core = __importStar(__nccwpck_require__(2186));
-var messagesStatusList = new Array();
+var messagesStatusList = new Array("List of commits not complaince: ");
 /**
  * Checks commit messages given by args.
  *
@@ -102,7 +102,7 @@ function checkCommitMessages(args) {
                 result = false;
             }
         }
-        core.setOutput('messagesStatusList', messagesStatusList.join(" ").toString());
+        core.setOutput('messagesStatusList', messagesStatusList.join(" ").toString().replace("','", ""));
         // Throw error in case of failed test
         if (!result) {
             throw new Error(args.error);
