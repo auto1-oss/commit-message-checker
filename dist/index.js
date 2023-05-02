@@ -94,11 +94,11 @@ function checkCommitMessages(args) {
         for (const message of args.messages) {
             if (checkMessage(message, args.pattern, args.flags)) {
                 core.info(`- OK: "${message}"`);
-                messagesStatusList.push(`"test`);
+                messagesStatusList.push(`'test'`);
             }
             else {
                 core.info(`- failed: "${message}"`);
-                messagesStatusList.push(`"test"`);
+                messagesStatusList.push(`'test'`);
                 result = false;
             }
         }
