@@ -21,6 +21,9 @@
 import * as core from '@actions/core'
 import * as inputHelper from './input-helper'
 import * as commitMessageChecker from './commit-message-checker'
+import * as yaml from 'js-yaml'
+import ffs from 'fs';
+const { promises: fs } = require('fs')
 
 /**
  * Main function
@@ -28,10 +31,32 @@ import * as commitMessageChecker from './commit-message-checker'
 async function run(): Promise<void> {
   try {
     const checkerArguments = await inputHelper.getInputs()
-    if (checkerArguments.messages.length === 0) {
-      core.info(`No commits found in the payload for relevent included users, skipping check.`)
-    } else {
-      await commitMessageChecker.checkCommitMessages(checkerArguments)
+    const required_workflow_override_configpath = core.getInput('RequiredWorkflowOverride')
+    if (required_workflow_override_configpath.trim().length > 0 && ffs.existsSync(required_workflow_override_configpath.trim())) {
+      let content = await fs.readFile(required_workflow_override_configpath, 'utf8')
+      content = content.trim()
+      core.debug(content)
+      let yamlData = yaml.load(content)
+      if (yamlData == null || yamlData == undefined) {
+        core.setFailed('Error in reading the yaml file')
+        return
+      }   
+      interface required_workflow_override_override_obj {
+        commit_message_compliance_checker: {
+          description: string,
+          Disable: boolean
+        }
+      }   
+      let required_workflow_override_override_config: required_workflow_override_override_obj = JSON.parse(JSON.stringify(yamlData, null, 2));
+      if (required_workflow_override_override_config.commit_message_compliance_checker.Disable == true) {
+        core.info("required_workflow_override_override set to disable, hence skipping ")
+        return
+      }      
+      if (checkerArguments.messages.length === 0) {
+        core.info(`No commits found in the payload for relevent included users, skipping check.`)
+      } else {
+        await commitMessageChecker.checkCommitMessages(checkerArguments)
+      }
     }
   } catch (error) {
     if (error instanceof Error) {

@@ -31,7 +31,10 @@ inputs:
   excludeUsers:
     description: 'you must provide list of users to exclude compliance check'
     required: false
-    default: '[]'     
+    default: '[]'  
+  RequiredWorkflowOverride:
+    description: 'This is the configuration file to override required workflow behavior'
+    default: ''       
 runs:
   using: node16
   main: dist/index.js
