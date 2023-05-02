@@ -19,7 +19,7 @@
  * Imports
  */
 import * as core from '@actions/core'
-
+var messagesStatusList = new Array(); 
 /**
  * Interface used as arguments for the check function containing the pattern,
  * error message and the messages.
@@ -71,12 +71,14 @@ export async function checkCommitMessages(
   for (const message of args.messages) {
     if (checkMessage(message, args.pattern, args.flags)) {
       core.info(`- OK: "${message}"`)
+      messagesStatusList.push(`- OK: "${message}"`)
     } else {
       core.info(`- failed: "${message}"`)
+      messagesStatusList.push(`- failed: "${message}"`)
       result = false
     }
   }
-
+  core.setOutput('messagesStatusList', messagesStatusList);
   // Throw error in case of failed test
   if (!result) {
     throw new Error(args.error)
