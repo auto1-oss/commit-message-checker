@@ -60,6 +60,7 @@ exports.checkCommitMessages = void 0;
  * Imports
  */
 const core = __importStar(__nccwpck_require__(2186));
+var messagesStatusList = new Array();
 /**
  * Checks commit messages given by args.
  *
@@ -93,12 +94,15 @@ function checkCommitMessages(args) {
         for (const message of args.messages) {
             if (checkMessage(message, args.pattern, args.flags)) {
                 core.info(`- OK: "${message}"`);
+                messagesStatusList.push(`- OK: "${message}"`);
             }
             else {
                 core.info(`- failed: "${message}"`);
+                messagesStatusList.push(`- failed: "${message}"`);
                 result = false;
             }
         }
+        core.setOutput('messagesStatusList', messagesStatusList);
         // Throw error in case of failed test
         if (!result) {
             throw new Error(args.error);
