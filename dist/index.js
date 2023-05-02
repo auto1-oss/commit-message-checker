@@ -104,7 +104,7 @@ function checkCommitMessages(args) {
         }
         let messagesStatusListStr = messagesStatusList.join('\n');
         core.info(messagesStatusListStr);
-        core.setOutput('messagesStatusList', messagesStatusList);
+        core.setOutput('messagesStatusList', messagesStatusListStr);
         // Throw error in case of failed test
         if (!result) {
             throw new Error(args.error);
