@@ -71,10 +71,10 @@ export async function checkCommitMessages(
   for (const message of args.messages) {
     if (checkMessage(message, args.pattern, args.flags)) {
       core.info(`- OK: "${message}"`)
-      messagesStatusList.push(`'test'`)
+      messagesStatusList.push(`'- OK: ${message}'`)
     } else {
       core.info(`- failed: "${message}"`)
-      messagesStatusList.push(`'test'`)
+      messagesStatusList.push(`'- failed: ${message}'`)
       result = false
     }
   }
