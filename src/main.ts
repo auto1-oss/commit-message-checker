@@ -40,23 +40,25 @@ async function run(): Promise<void> {
       if (yamlData == null || yamlData == undefined) {
         core.setFailed('Error in reading the yaml file')
         return
-      }   
+      }
       interface required_workflow_override_override_obj {
         commit_message_compliance_checker: {
           description: string,
           Disable: boolean
         }
-      }   
+      }
+
       let required_workflow_override_override_config: required_workflow_override_override_obj = JSON.parse(JSON.stringify(yamlData, null, 2));
       if (required_workflow_override_override_config.commit_message_compliance_checker.Disable == true) {
         core.info("required_workflow_override_override set to disable, hence skipping ")
         return
-      }      
-      if (checkerArguments.messages.length === 0) {
-        core.info(`No commits found in the payload for relevent included users, skipping check.`)
-      } else {
-        await commitMessageChecker.checkCommitMessages(checkerArguments)
       }
+    }
+    
+    if (checkerArguments.messages.length === 0) {
+      core.info(`No commits found in the payload for relevent included users, skipping check.`)
+    } else {
+      await commitMessageChecker.checkCommitMessages(checkerArguments)
     }
   } catch (error) {
     if (error instanceof Error) {

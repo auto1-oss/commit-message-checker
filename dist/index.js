@@ -102,7 +102,12 @@ function checkCommitMessages(args) {
                 result = false;
             }
         }
-        core.setOutput('messagesStatusList', messagesStatusList.join("").toString().replace(/'/g, "").replace(",", ""));
+        if (messagesStatusList.length > 1) {
+            core.setOutput('messagesStatusList', messagesStatusList.join("").toString().replace(/'/g, "").replace(",", ""));
+        }
+        else {
+            core.setOutput('messagesStatusList', "null");
+        }
         // Throw error in case of failed test
         if (!result) {
             throw new Error(args.error);
@@ -497,12 +502,12 @@ function run() {
                     core.info("required_workflow_override_override set to disable, hence skipping ");
                     return;
                 }
-                if (checkerArguments.messages.length === 0) {
-                    core.info(`No commits found in the payload for relevent included users, skipping check.`);
-                }
-                else {
-                    yield commitMessageChecker.checkCommitMessages(checkerArguments);
-                }
+            }
+            if (checkerArguments.messages.length === 0) {
+                core.info(`No commits found in the payload for relevent included users, skipping check.`);
+            }
+            else {
+                yield commitMessageChecker.checkCommitMessages(checkerArguments);
             }
         }
         catch (error) {

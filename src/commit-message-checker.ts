@@ -78,7 +78,13 @@ export async function checkCommitMessages(
       result = false
     }
   }
-  core.setOutput('messagesStatusList', messagesStatusList.join("").toString().replace(/'/g, "").replace(",",""));
+  if (messagesStatusList.length > 1) {
+    core.setOutput('messagesStatusList', messagesStatusList.join("").toString().replace(/'/g, "").replace(",", ""));
+  }
+  else {
+    core.setOutput('messagesStatusList', "null");
+  }
+  
   // Throw error in case of failed test
   if (!result) {
     throw new Error(args.error)
